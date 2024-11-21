@@ -1,5 +1,3 @@
---yml que deu certo java
-
 trigger:
 - main
 
@@ -11,16 +9,17 @@ steps:
 - script: |
     sudo apt update
     sudo apt install -y openjdk-21-jdk
-    echo "JAVA_HOME set to /usr/lib/jvm/java-21-openjdk-amd64"
+    echo "##vso[task.setvariable variable=JAVA_HOME]$(/usr/lib/jvm/java-21-openjdk-amd64)"
+    echo "JAVA_HOME is set to $(JAVA_HOME)"
   displayName: 'Install JDK 21'
 
-# Configura o Maven para compilar o projeto usando o JDK instalado
+# Configura o Maven para compilar o projeto
 - task: Maven@4
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx3072m'
     javaHomeOption: 'Path'
-    jdkUserInputPath: '/usr/lib/jvm/java-21-openjdk-amd64' # Caminho manual para o JDK
+    jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
