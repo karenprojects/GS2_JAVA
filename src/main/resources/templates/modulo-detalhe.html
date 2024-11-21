@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Módulo: ' + ${modulo.nome_modulo}">Detalhes do Módulo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .modulo-header {
+            background-color: #1e1e1e;
+            padding: 35px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0px 4px 30px rgba(0, 255, 127, 0.5);
+        }
+
+        .modulo-header h1 {
+            color: #00ff7f;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .modulo-header p {
+            color: #bbb;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .conteudo-card {
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0px 4px 25px rgba(0, 255, 127, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .conteudo-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 30px rgba(0, 255, 127, 0.6);
+        }
+
+        .conteudo-title {
+            color: #00ff7f;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .conteudo-description {
+            color: #ccc;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .conteudo-card button {
+            background-color: #00ff7f;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            padding: 12px 0;
+            border-radius: 25px;
+            font-size: 1.1rem;
+        }
+
+        .conteudo-card button:hover {
+            background-color: #00d266;
+            color: #fff;
+        }
+
+        .content-modal {
+            display: none;
+            background-color: #2a2a2a;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0px 4px 15px rgba(0, 255, 127, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .show-content {
+            display: block !important;
+            opacity: 1;
+        }
+
+        /* Highlighted content */
+        .conteudo-modal h4 {
+            color: #00ff7f;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .conteudo-modal p {
+            color: #ddd;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Card grid layout */
+        .conteudo-card-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        /* Adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .conteudo-card-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .modulo-header h1 {
+                font-size: 2rem;
+            }
+
+            .conteudo-title {
+                font-size: 1.6rem;
+            }
+
+            .btn-access {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="modulo-header">
+        <h1 th:text="${modulo.nome_modulo}">Nome do Módulo</h1>
+        <p th:text="${modulo.descricao}">Descrição do módulo...</p>
+    </div>
+
+    <div>
+        <h2 class="text-center mb-5">Conteúdos do Módulo</h2>
+        <div class="conteudo-card-wrapper">
+            <div th:each="conteudo : ${conteudos}">
+                <div class="conteudo-card" onclick="showContent(event)">
+                    <h3 class="conteudo-title" th:text="${conteudo.nome_conteudo}">Nome do Conteúdo</h3>
+                    <p class="conteudo-description" th:text="${#strings.abbreviate(conteudo.corpo, 100)}">Descrição do conteúdo...</p>
+                    <button class="btn btn-access">Ver Conteúdo Completo</button>
+                    <div class="content-modal">
+                        <h4>Conteúdo Completo:</h4>
+                        <p th:text="${conteudo.corpo}">Corpo do conteúdo...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/class" class="btn btn-secondary">Voltar à Sala de Aula</a>
+    </div>
+</div>
+
+<script>
+    function showContent(event) {
+        // Esconde todos os outros conteúdos
+        const allModals = document.querySelectorAll('.content-modal');
+        allModals.forEach(modal => {
+            modal.classList.remove('show-content');
+        });
+
+        // Mostra o conteúdo do card clicado
+        const contentModal = event.target.closest('.conteudo-card').querySelector('.content-modal');
+        contentModal.classList.add('show-content');
+    }
+</script>
+
+</body>
+</html>
